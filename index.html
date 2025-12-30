@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi ubicación - Azure Maps</title>
+
+  <!-- Azure Maps SDK -->
+  <link
+    rel="stylesheet"
+    href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css"
+  />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+
+  <style>
+    body { font-family: Arial; }
+    #map { width: 100%; height: 350px; margin-bottom: 10px; }
+    img { max-width: 100%; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+<h3>Mapa interactivo</h3>
+<div id="map"></div>
+
+<h3>Foto del mapa (Static Map)</h3>
+<img id="staticMap" />
+
+<script>
+  const AZURE_MAPS_KEY = 'C7R6pZusksTzywmOLKVrKC9fMsH2gwA3jN7viiE6bfo1Zg7XqD5cJQQJ99BLACYeBjFufy6TAAAgAZMPaL1d';
+
+  if (!navigator.geolocation) {
+    alert('Geolocalización no soportada');
+  } else {
+    navigator.geolocation.getCurrentPosition(
+      success,
+      error,
+      {
+        enableHighAccuracy: true, // 🔥 CLAVE
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  }
+
+  function success(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+
+    console.log('Lat:', lat, 'Lng:', lng);
+
+    initMap(lat, lng);
+    loadStaticMap(lat, lng);
+  }
+
+  function error(err) {
+    console.error(err);
+    alert('No se pudo obtener la ubicación');
+  }
+
+  function initMap(lat, lng) {
+    const map = new atlas.Map('map', {
+      center: [lng, lat],
+      zoom: 17,
+      authOptions: {
+        authType: 'subscriptionKey',
+        subscriptionKey: AZURE_MAPS_KEY
+      }
+    });
+
+    map.events.add('ready', () => {
+      map.markers.add(
+        new atlas.HtmlMarker({
+          position: [lng, lat],
+          text: '📍'
+        })
+      );
+    });
+  }
+
+  function loadStaticMap(lat, lng) {
+    document.getElementById('staticMap').src =
+      `https://atlas.microsoft.com/map/static/png` +
+      `?api-version=1.0` +
+      `&center=${lng},${lat}` +
+      `&zoom=17` +
+      `&width=600` +
+      `&height=350` +
+      `&pins=default|${lng} ${lat}` +
+      `&subscription-key=${AZURE_MAPS_KEY}`;
+  }
+</script>
+
+</body>
+</html>
