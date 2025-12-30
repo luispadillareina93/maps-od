@@ -23,7 +23,7 @@
 <div id="map"></div>
 
 <h3>Foto del mapa (Static Map)</h3>
-<img id="staticMap" />
+<img id="staticMap" alt="Mapa estático"/>
 
 <script>
   const AZURE_MAPS_KEY = 'C7R6pZusksTzywmOLKVrKC9fMsH2gwA3jN7viiE6bfo1Zg7XqD5cJQQJ99BLACYeBjFufy6TAAAgAZMPaL1d';
@@ -35,7 +35,7 @@
       success,
       error,
       {
-        enableHighAccuracy: true, // 🔥 CLAVE
+        enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0
       }
@@ -77,15 +77,17 @@
     });
   }
 
-  function loadStaticMap(lat, lng) {
-    document.getElementById('staticMap').src =
+   function loadStaticMap(lat, lng) {
+    const img = document.getElementById('staticMap');
+
+    img.src =
       `https://atlas.microsoft.com/map/static/png` +
       `?api-version=1.0` +
-      `&center=${lng},${lat}` +
-      `&zoom=17` +
+      `&center=${lng},${lat}` +      // coma ✔️
+      `&zoom=16` +
       `&width=600` +
-      `&height=350` +
-      `&pins=default|${lng} ${lat}` +
+      `&height=400` +
+      `&pins=default||${lng} ${lat}` + // espacio ✔️
       `&subscription-key=${AZURE_MAPS_KEY}`;
   }
 </script>
